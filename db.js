@@ -40,13 +40,12 @@ patientSchema.post("insertMany", handleE11000);
 
 const Patient = mongoose.model("Patient", patientSchema);
 
-const listPatients = (projection, skip, limit, sort) =>
-  Patient.find({}, projection, {
-    sort,
+const listPatients = (query, projection, skip, limit, sort) =>
+  Patient.find(query, projection, {
+    sort: sort,
     limit,
     skip
-  });
-
+  }).lean();
 const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName }).lean();
 
 const patchPatient = (_id, firstName, lastName) =>

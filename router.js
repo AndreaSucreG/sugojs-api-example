@@ -8,7 +8,15 @@ const handleResponse = (res, status, data) => {
 };
 
 router
-  .get("/patients/", async (req, res) => handleResponse(res, 200, await service.listPatients()))
+  .get("/patients/", async (req, res) => {
+    const { projection, skip, limit, sort } = req.query;
+    delete req.query.projection;
+    delete req.query.skip;
+    delete req.query.limit;
+    delete req.query.sort;
+    const data = await service.listPatients(req.query, skip, limit, projection, sort);
+    return handleResponse(res, 200, data);
+  })
   .post("/patients/", async (req, res) =>
     handleResponse(res, 200, await service.createPatient(req.body.firstName, req.body.lastName))
   )
