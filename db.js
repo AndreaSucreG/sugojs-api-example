@@ -21,10 +21,13 @@ const handleValidationError = function(error, res, next) {
   }
 };
 
-const patientSchema = new Schema({
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true }
-});
+const patientSchema = new Schema(
+  {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true }
+  },
+  { timestamps: true }
+);
 patientSchema.post("save", handleValidationError);
 patientSchema.post("update", handleValidationError);
 patientSchema.post("findOneAndUpdate", handleValidationError);
@@ -47,7 +50,7 @@ const listPatients = (projection, skip, limit, sort) =>
 const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName });
 
 const patchPatient = (_id, firstName, lastName) =>
-  Patient.findByIdAndUpdate(_id, { $set: { firstName, lastName } }).lean();
+  Patient.findByIdAndUpdate(_id, { $set: { firstName, lastName } }, { new: true }).lean();
 
 const deletePatient = (_id, sort, select) => Patient.findByIdAndRemove(_id, { sort, select }).lean();
 

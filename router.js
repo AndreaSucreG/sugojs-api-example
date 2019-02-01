@@ -13,9 +13,9 @@ router
     handleResponse(res, 200, await service.createPatient(req.body.firstName, req.body.lastName))
   )
   .patch("/patients/:id", async (req, res) =>
-    handleResponse(res, 200, await service.listPatients(req.params.id, req.body.firstName, req.body.lastName))
+    handleResponse(res, 200, await service.patchPatient(req.params.id, req.body.firstName, req.body.lastName))
   )
-  .delete("/patients/:id", async (req, res) => handleResponse(res, 200, await service.listPatients(req.params.id)))
+  .delete("/patients/:id", async (req, res) => handleResponse(res, 200, await service.deletePatient(req.params.id)))
   .options("/(.*)", (req, res) => res.end());
 
 module.exports = router;
