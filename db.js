@@ -47,7 +47,7 @@ const listPatients = (projection, skip, limit, sort) =>
     skip
   });
 
-const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName });
+const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName }).lean();
 
 const patchPatient = (_id, firstName, lastName) =>
   Patient.findByIdAndUpdate(_id, { $set: { firstName, lastName } }, { new: true }).lean();
