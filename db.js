@@ -42,11 +42,11 @@ const Patient = mongoose.model("Patient", patientSchema);
 
 const listPatients = (query, projection, skip, limit, sort) =>
   Patient.find(query, projection, {
-    sort: sort,
-    limit,
-    skip
+    sort,
+    limit: limit ? parseInt(limit) : null,
+    skip: skip ? parseInt(skip) : null
   }).lean();
-const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName }).lean();
+const createPatient = (firstName, lastName) => Patient.create({ firstName, lastName });
 
 const patchPatient = (_id, firstName, lastName) =>
   Patient.findByIdAndUpdate(_id, { $set: { firstName, lastName } }, { new: true }).lean();

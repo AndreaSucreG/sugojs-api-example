@@ -14,7 +14,7 @@ router
     delete req.query.skip;
     delete req.query.limit;
     delete req.query.sort;
-    const data = await service.listPatients(req.query, skip, limit, projection, sort);
+    const data = await service.listPatients(req.query, projection, skip, limit, sort);
     return handleResponse(res, 200, data);
   })
   .post("/patients/", async (req, res) =>
