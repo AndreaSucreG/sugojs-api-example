@@ -1,19 +1,19 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const env = require("./environment");
-const { MongooseValidationError } = require("./exceptions");
+const { MongooseValidationError, MongooseDuplicateKeyError } = require("./exceptions");
 const connect = () => mongoose.connect(env.mongoose.uri, env.mongoose.options);
 const disconnect = () => mongoose.disconnect();
 
-var handleE11000 = function(error, res, next) {
+const handleE11000 = function(error, res, next) {
   if (error.name === "MongoError" && error.code === 11000) {
-    next(new Error("There was a duplicate key error"));
+    next(new MongooseDuplicateKeyError(error.message, error.stack));
   } else {
     next();
   }
 };
 
-var handleValidationError = function(error, res, next) {
+const handleValidationError = function(error, res, next) {
   if (error.name === "ValidationError") {
     next(new MongooseValidationError(error.stack, error.errors));
   } else {
@@ -21,7 +21,7 @@ var handleValidationError = function(error, res, next) {
   }
 };
 
-var patientSchema = new Schema({
+const patientSchema = new Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true }
 });
@@ -30,7 +30,12 @@ patientSchema.post("update", handleValidationError);
 patientSchema.post("findOneAndUpdate", handleValidationError);
 patientSchema.post("insertMany", handleValidationError);
 
-var Patient = mongoose.model("Patient", patientSchema);
+patientSchema.post("save", handleE11000);
+patientSchema.post("update", handleE11000);
+patientSchema.post("findOneAndUpdate", handleE11000);
+patientSchema.post("insertMany", handleE11000);
+
+const Patient = mongoose.model("Patient", patientSchema);
 
 const listPatients = (projection, skip, limit, sort) =>
   Patient.find({}, projection, {

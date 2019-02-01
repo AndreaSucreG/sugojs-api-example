@@ -12,6 +12,20 @@ class MongooseValidationError {
   }
 }
 
+class MongooseDuplicateKeyError {
+  constructor(message, stack) {
+    this.name = "MongooseDuplicateKeyError";
+    this.message = message;
+    this.stack = stack;
+    this.status = 422;
+  }
+
+  handle(req, res) {
+    res.status(this.status).json(this);
+  }
+}
+
 module.exports = {
-  MongooseValidationError
+  MongooseValidationError,
+  MongooseDuplicateKeyError
 };
