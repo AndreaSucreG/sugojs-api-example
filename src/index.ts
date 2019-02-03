@@ -1,4 +1,4 @@
 import server from './server'
 import * as db from './db'
-
-db.connect().then(() => server.listen(3000));
+import env from './environment'
+db.connect().then(() => server.listen(env.server.port));

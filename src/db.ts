@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose'
 import env from './environment'
 const Schema = mongoose.Schema;
-import { MongooseValidationError, MongooseDuplicateKeyError } from './exceptions/exceptions';
+import { MongooseValidationError, MongooseDuplicateKeyError } from './exceptions';
 
 export const connect = () => mongoose.connect(env.mongoose.uri, env.mongoose.options as mongoose.ConnectionOptions);
 export const disconnect = () => mongoose.disconnect();
@@ -30,11 +30,11 @@ export interface IPatient {
 export interface IPatientModel extends IPatient, mongoose.Document {
 }
 
-
 export const PatientSchema = new Schema(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+
+    firstName: { type: String, required: true, trim: true, minlength: 1 },
+    lastName: { type: String, required: true, trim: true, minlength: 1 },
   },
   { timestamps: true },
 );
@@ -49,6 +49,8 @@ PatientSchema.post('findOneAndUpdate', handleE11000);
 PatientSchema.post('insertMany', handleE11000);
 
 export const Patient: mongoose.Model<IPatientModel> = mongoose.model<IPatientModel>("Patient", PatientSchema);
+
+export const existsPatient = (_id:string) => Patient.findById(_id).select('_id').lean()
 
 export const listPatients = (query?:any, projection?: string, skip?:string, limit?:string, sort?:string) =>
   Patient.find(query, projection, {

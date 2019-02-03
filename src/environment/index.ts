@@ -11,8 +11,13 @@ export interface MongooseOptions {
   options: ConnectionOptions
 }
 
+export interface ServerOptions {
+  port: number;
+}
+
 export interface Environment {
-  mongoose: MongooseOptions
+  mongoose: MongooseOptions,
+  server: ServerOptions
 }
 
 /**
